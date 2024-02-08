@@ -28,7 +28,8 @@ the first radian measure, or `sx` of the chord, and the second value representin
 `x` in this case represents which number chord these measures belong to, the 1st one, 2nd one, 3rd, etc. `sx` and `ex` values must start at `1`, and continue by `1` for as many chords you are inputting in to program.
 
 ### Example:
-identifiers = ["s1", "s3", "e3", "e2", "e1", "s2"]
+identifiers   = ["s1", "s3", "e3", "e2", "e1", "s2"]
+angleMeasures = [  20,   80,  240,  110,  190,  220]
 
 ## Thought process, and strategy
 When trying to figure out how I can come up with a way to use the input given to find a solution, my mind was wracked with many different possibilities. I had initially overcomplicated it, and tried leveraging several mathematical concepts such as the `Intersecting Chords Theorem` and a few others. When I realized I did not have nearly enough information to use these theorems, I scaled back, and decided to try and find a relationship with the radian measures. I asked several important questions:
@@ -41,11 +42,24 @@ After asking all of these important questions, eventually, I struck gold and fou
 
 **When two chords intersect, the sx and ex values of one, will ALWAYS be greater than the sx and ex values of the other**
 
-With this revelation, I was finally able to fill in the hole preventing me from completing the asssessment. Now that I know that intersecting chords **always** have one chord that larger, and one chord that smaller, I can simply check for this by using conditions:
+With this revelation, I was finally able to fill in the hole preventing me from completing the asssessment. Now that I know that intersecting chords **always** have one chord that is larger, and one chord that is smaller, I can simply check for this by using the following conditions:
 
-- Check for when s1 and e1 > s2 and e2 (chord 1 > chord 2), and ALSO check to see if the ending measure, e2 of the smaller chord is **greater** than the starting measure, s1 of the larger chord.
--  Check for when s2 and e2 > s1 and e1 (chord 2 > chord 1), and ALSO check to see if the ending measure, e1 of the smaller chord is **greater** than the starting measure, s2 of the larger chord.
+- Check for when `s1 and e1 > s2 and e2` (chord 1 > chord 2), and ALSO check to see if the ending measure, e2 of the smaller chord is **greater** than the starting measure, s1 of the larger chord.
+- Check for when `s2 and e2 > s1 and e1` (chord 2 > chord 1), and ALSO check to see if the ending measure, e1 of the smaller chord is **greater** than the starting measure, s2 of the larger chord.
 
 The second condition in each larger condition is *EXTREMELY IMPORTANT*, as only checking for the smaller and larger chords will also allow non-intersecting chords to pass the condition. You have to make sure the chords actually cross by seeing if the ending of the smaller chord is greater than the start of the larger chord, which means the smaller chord falls in the radian range of the larger chord.
 
 ## Big-O Analysis
+Finally, I will provide a thorough run time analysis for my program. I will break it down function by function, giving the run time of each one, and adding them together at the end.
+
+Let's check the first function in my solution:
+
+    void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
+        for (size_t i = 0; i < identifiers.size() / 2; i++){
+            //find si and ei.
+            auto sxPos = std::find(identifiers.begin(), identifiers.end(), "s" + std::to_string(i + 1));
+            auto exPos = std::find(identifiers.begin(), identifiers.end(), "e" + std::to_string(i + 1));
+
+            chords.push_back({*sxPos, radianMeasures[sxPos - identifiers.begin()], *exPos, radianMeasures[exPos - identifiers.begin()]});
+        }
+    }
