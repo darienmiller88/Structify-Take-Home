@@ -1,0 +1,1 @@
+# Structify take home assessment
