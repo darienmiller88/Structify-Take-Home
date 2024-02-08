@@ -53,31 +53,47 @@ The second condition in each larger condition is *EXTREMELY IMPORTANT*, as only 
 Finally, I will provide a thorough run time analysis for my program. I will break it down function by function, giving the run time of each one, and adding them together at the end. Before we start, I will establish the simple object I used to store information about each chord:
 
     struct Chord{
-        std::string s_x;
-        double      radian1;
+        RadianMeasure sx;
+        RadianMeasure ex;
+    };
 
-        std::string e_x;
-        double      radian2;
+As well as an object representing a radian measure:
+
+    struct RadianMeasure{
+        std::string identifier;
+        double      radianMeasure;
     };
 
 
 Let's check the first function in my solution:
 
-    void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
-        for (size_t i = 0; i < identifiers.size() / 2; i++){
-            auto sxPos = std::find(identifiers.begin(), identifiers.end(), "s" + std::to_string(i + 1));
-            auto exPos = std::find(identifiers.begin(), identifiers.end(), "e" + std::to_string(i + 1));
+    void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &   radianMeasures, std::vector<Chord> &chords){
+        std::vector<RadianMeasure> allRadianMeasures;
 
-            chords.push_back({*sxPos, radianMeasures[sxPos - identifiers.begin()], *exPos, radianMeasures[exPos - identifiers.begin()]});
+        for (size_t i = 0; i < identifiers.size(); i++){
+            allRadianMeasures.push_back({identifiers[i], radianMeasures[i]});
+        }
+    
+        std::sort(allRadianMeasures.begin(), allRadianMeasures.end(), [](RadianMeasure s1, RadianMeasure s2) -> bool{
+            return s1.identifier < s2.identifier;
+        });
+    
+        int len = allRadianMeasures.size() / 2;
+        for (size_t i = 0; i < len; i++){
+            RadianMeasure sx = allRadianMeasures[i + len];
+            RadianMeasure ex = allRadianMeasures[i];
+
+            chords.push_back(Chord(sx, ex));
         }
     }
 
-This function is responsible for parsing the identifiers and radian measures from both arrays, and storing them in the above `Chord` object I created. This function accomplishes this by:
+In this function, I take three steps to parse the `identifiers` and `radianMeasure` arrays in order to fill the `chord` vector with all of the chords from the initial input.
 
-- Using a for loop that goes from 0 to N / 2, which starts us of with a run time of `O(N / 2)`
-- I use the `std::find()` function to search the `identifiers` array twice, once to retrieve the `sx` value, and second to retrieve the `ex` value. Each search takes `O(N)` time since it is iterating through each element in the array. That leaves us with a run time of `O(2N)` to parse each array and fill the `chords` vector.
+- Fill the `allRadianMeasures` container with the values from the `identifiers` and `radianMeasures` arrays, which will scale with the length of the both arrays, `N`. This results in a run of `O(N)`.
+- Sort the `allRadianMeasures` values by comparing the value of `sx` and `ex`. `std::sort()` uses quicksort as the sorting algorithm, which run has a run time of  `O(Nlog(N))`.
+- Fill the `chords` vector with the radian measures, which can be easily be done since it is sorted. Since a Chord has two radian measures, it is only necessary to iterate through half of the `allRadianMeasures`. This results in a run time of `O(N / 2)`.
 
-> Since the array is making `N / 2` iterations, and each iteration takes `2N` time, Big-O run time for this function will be `O(N / 2 * 2N)`, which can be simplified down to `O(N^2)`.
+> Added together, The total runtime for my solution is `O(N) + O(Nlog(N)) + O(N/2)`, which can be simplified to `O(N + Nlog(N))`.
 
 Let's check the second function in my solution:
 
@@ -107,9 +123,9 @@ Finally, Let's check the third and last function in my solution:
         return intersections.size();
     }
 
-In this function, just like the first one utilizes a nested loop, but with a couple of changes. It starts from `i to N`, and the inner loop starts at `i + 1 to N`. This slight change reduces the runtime somewhat compared to a standard `O(N^2)` nested loop. Since each iteration of the inner loop will check on less numbers than the previous iteration, the total number of iterations will be equal to the famous arithmetic sequence, `O(N(N + 1)/2)`, which represents the sum of numbers 1 to N. 
+This function starts from i to N, and the inner loop starts at i + 1 to N. This slight change reduces the runtime somewhat compared to a standard O(N^2) nested loop. Since each iteration of the inner loop will check on less numbers than the previous iteration, the total number of iterations will be equal to the famous arithmetic sequence, O(N(N + 1)/2), which represents the sum of numbers 1 to N. When simplified, the runtime for this function is also `O(N^2)`
 
-> When simplified, the runtime for this function is also `O(N^2)`. Added together, The total runtime for my solution is `O(N^2) + O(1) + O(N^2)`.
+> Added together, The total runtime for my solution is `O(N + Nlog(N)) + O(1) + O(N^2)`
 
 ## Potential Improvements/Optimizations
-Although I was satisified with the solution I came up with, I acknowledge that there are a few ways to optimize my code to run a little more efficiently. The function I could have optimized the most was definitely my `parseRadianMeasures()` function. In this case, I decided to priotize code readability and terseness over trying to write the most optimal algortithm I could possibly write. The strategy I could have used involved created a new object called`radianMeasure`, and then storing both the value from identifier array and radianMeasures array in this data structure. 
+Although I was satisified with the solution I came up with, I acknowledge that there was one way to optimize my code to run a little more efficiently. The function I could have optimized the most was definitely my `parseRadianMeasures()` function. In this case, I decided to priotize code readability and terseness over trying to write the most optimal algortithm I could possibly write. The strategy I could have used involved created writing my own quick algorithm that sorted both `identifiers` and `radianMeasures` at the same time, thus getting rid of the need to parse them into another container before sorting, removing the initial `O(N)` step. However, doing so would add a lot more code, so I chose not to, and stuck with my current solution.

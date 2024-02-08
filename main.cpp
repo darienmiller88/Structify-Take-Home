@@ -68,16 +68,6 @@ int returnAllIntersections(const std::vector<Chord> &chords){
     return intersections.size();
 }
 
-// void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
-//     for (size_t i = 0; i < identifiers.size() / 2; i++){
-//         //find si and ei.
-//         auto sxPos = std::find(identifiers.begin(), identifiers.end(), "s" + std::to_string(i + 1));
-//         auto exPos = std::find(identifiers.begin(), identifiers.end(), "e" + std::to_string(i + 1));
-
-//         chords.push_back({*sxPos, radianMeasures[sxPos - identifiers.begin()], *exPos, radianMeasures[exPos - identifiers.begin()]});
-//     }
-// }
-
 void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
     std::vector<RadianMeasure> allRadianMeasures;
 
