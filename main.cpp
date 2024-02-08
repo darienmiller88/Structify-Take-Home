@@ -41,15 +41,16 @@ bool findIntersection(Chord c1, Chord c2) {
 
 int returnAllIntersections(const std::vector<Chord> &chords){
     std::unordered_map<int, double> intersections;
-    int numIntersections = 0;
 
     //In order to find every possible intersection in a circle with an unknown number of chords, we will first
     //check the first chord, with every single 
     for (size_t i = 0; i < chords.size(); i++){
         for (size_t j = i + 1; j < chords.size(); j++){
-            //
+            //Send the ith Chord and the jth chord to the "findIntersection" function to see if they interesect
             if (findIntersection(chords[i], chords[j])){
-                numIntersections++;
+
+                //If the chords intersect, add the chord number to the map as a key value pair to signify
+                //which chords the ith chord intersects with.
                 intersections[i + 1] = j + 1;
                 std::cout << "chords: " << i + 1 << " and " << j + 1<< " intersect.\n";
             }else{
@@ -58,11 +59,7 @@ int returnAllIntersections(const std::vector<Chord> &chords){
         }
     }
 
-    // for(auto chordIntersect : intersections){
-    //     std::cout << "chord: " << chordIntersect.first << " and chord: " << chordIntersect.second << " intersect\n";
-    // }
-    
-    return numIntersections;
+    return intersections.size();
 }
 
 void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
@@ -71,14 +68,13 @@ void parseRadianMeasures(const std::vector<std::string> &identifiers, const std:
         auto sxPos = std::find(identifiers.begin(), identifiers.end(), "s" + std::to_string(i + 1));
         auto exPos = std::find(identifiers.begin(), identifiers.end(), "e" + std::to_string(i + 1));
 
-        // std::cout << "s" << sxPos - identifiers.begin() << " and e: "  << exPos - identifiers.begin() << "\n";
         chords.push_back({*sxPos, radianMeasures[sxPos - identifiers.begin()], *exPos, radianMeasures[exPos - identifiers.begin()]});
     }
 }
 
 int main(){  
     std::vector<std::string> identifiers = {"s4", "e4", "s1", "e1", "e3", "s3", "s2", "e2"};
-    std::vector<double> radianMeasures   = {0,    200,   20,   80,  240,  110,  190,  220};
+    std::vector<double> radianMeasures   = {60,    200,   20,   80,  240,  110,  190,  220};
     std::vector<Chord> chords; 
 
     parseRadianMeasures(identifiers, radianMeasures, chords);
