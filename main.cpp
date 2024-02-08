@@ -43,10 +43,10 @@ int returnAllIntersections(const std::vector<Chord> &chords){
     std::unordered_map<int, double> intersections;
 
     //In order to find every possible intersection in a circle with an unknown number of chords, we will first
-    //check the first chord, with every single 
+    //check the first chord, with every single chord after it.
     for (size_t i = 0; i < chords.size(); i++){
         for (size_t j = i + 1; j < chords.size(); j++){
-            //Send the ith Chord and the jth chord to the "findIntersection" function to see if they interesect
+            //Send the ith Chord and the jth chord to the "findIntersection" function to see if they interesect.
             if (findIntersection(chords[i], chords[j])){
 
                 //If the chords intersect, add the chord number to the map as a key value pair to signify

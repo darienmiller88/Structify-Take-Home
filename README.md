@@ -28,8 +28,8 @@ the first radian measure, or `sx` of the chord, and the second value representin
 `x` in this case represents which number chord these measures belong to, the 1st one, 2nd one, 3rd, etc. `sx` and `ex` values must start at `1`, and continue by `1` for as many chords you are inputting in to program.
 
 ### Example:
-identifiers   = ["s1", "s3", "e3", "e2", "e1", "s2"]
-angleMeasures = [  20,   80,  240,  110,  190,  220]
+`identifiers   = ["s1", "s3", "e3", "e2", "e1", "s2"]`
+`angleMeasures = [  20,   80,  240,  110,  190,  220]`
 
 ## Thought process, and strategy
 When trying to figure out how I can come up with a way to use the input given to find a solution, my mind was wracked with many different possibilities. I had initially overcomplicated it, and tried leveraging several mathematical concepts such as the `Intersecting Chords Theorem` and a few others. When I realized I did not have nearly enough information to use these theorems, I scaled back, and decided to try and find a relationship with the radian measures. I asked several important questions:
@@ -75,9 +75,9 @@ Let's check the first function in my solution:
 This function is responsible for parsing the identifiers and radian measures from both arrays, and storing them in the above `Chord` object I created. This function accomplishes this by:
 
 - Using a for loop that goes from 0 to N / 2, which starts us of with a run time of `O(N / 2)`
-- I use the `std::find()` function to search the `identifiers` array twice, once to retrieve the `sx` value, and second to retrieve the `ex` value. Each search take `O(N)` time since it is iterating through each element in the array. That leaves us with a run time of `O(2N)` to parse each array and fill the `chords` vector.
+- I use the `std::find()` function to search the `identifiers` array twice, once to retrieve the `sx` value, and second to retrieve the `ex` value. Each search takes `O(N)` time since it is iterating through each element in the array. That leaves us with a run time of `O(2N)` to parse each array and fill the `chords` vector.
 
-Since the array is making `N / 2` iterations, and each iteration takes `2N` time, Big-O run time for this function will be `O(N / 2 * 2N)`, which can be simplified down to `O(N^2)`.
+> Since the array is making `N / 2` iterations, and each iteration takes `2N` time, Big-O run time for this function will be `O(N / 2 * 2N)`, which can be simplified down to `O(N^2)`.
 
 Let's check the second function in my solution:
 
@@ -87,7 +87,31 @@ Let's check the second function in my solution:
         return  ((s2 > s1 && e2 > e1) && e1 > s2) || ((s1 > s2 && e1 > e2) && e2 > s1);
     }
 
-This one is fairly self-explanatory, as there is no iterating over containers. A simple comparison is done between two `Chord` objects, and boolean value is returned signifying whether or not they intersect. Since comparisons will only ever be done between two objects, the function will perform the same number of operations regardless of the size of the initial input. Thus, the run time of this function is constant, or `O(1)`.
+This one is fairly self-explanatory, as there is no iterating over containers. A simple comparison is done between two `Chord` objects, and boolean value is returned signifying whether or not they intersect. Since comparisons will only ever be done between two objects, the function will perform the same number of operations regardless of the size of the initial input. 
+
+> Thus, the run time of this function is constant, or `O(1)`.
+
+Finally, Let's check the third and last function in my solution:
+
+    int returnAllIntersections(const std::vector<Chord> &chords){
+        std::unordered_map<int, double> intersections;
+
+        for (size_t i = 0; i < chords.size(); i++){
+            for (size_t j = i + 1; j < chords.size(); j++){
+                if (findIntersection(chords[i], chords[j])){
+                    intersections[i + 1] = j + 1;
+                }
+            }
+        }
+
+        return intersections.size();
+    }
+
+In this function, just like the first one utilizes a nested loop, but with a couple of changes. It starts from `i to N`, and the inner loop starts at i + 1 to N. This slight change reduces the runtime somewhat compared to a standard `O(N^2)` nested loop. Since each iteration of the inner loop will check on less number than the previous iteration, the total number of iterations will be equal to the famous arithmetic sequence, `O(N(N + N)/2)`, which represents the sum of numbers 1 to N. 
+
+> When simplified, the runtime for this function is also `O(N^2)`.
+
+> Added together, The total runtime for my solution is O(N^2) + O(1) + O(N^2).
 
 ## Potential Improvements/Optimizations
 Although I was satisified with the solution I came up with, I acknowledge that there are a few ways to optimize my code to run a little more efficiently.
