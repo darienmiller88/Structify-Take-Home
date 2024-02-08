@@ -50,16 +50,44 @@ With this revelation, I was finally able to fill in the hole preventing me from 
 The second condition in each larger condition is *EXTREMELY IMPORTANT*, as only checking for the smaller and larger chords will also allow non-intersecting chords to pass the condition. You have to make sure the chords actually cross by seeing if the ending of the smaller chord is greater than the start of the larger chord, which means the smaller chord falls in the radian range of the larger chord.
 
 ## Big-O Analysis
-Finally, I will provide a thorough run time analysis for my program. I will break it down function by function, giving the run time of each one, and adding them together at the end.
+Finally, I will provide a thorough run time analysis for my program. I will break it down function by function, giving the run time of each one, and adding them together at the end. Before we start, I will establish the simple object I used to store information about each chord:
+
+    struct Chord{
+        std::string s_x;
+        double      radian1;
+
+        std::string e_x;
+        double      radian2;
+    };
+
 
 Let's check the first function in my solution:
 
     void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
         for (size_t i = 0; i < identifiers.size() / 2; i++){
-            //find si and ei.
             auto sxPos = std::find(identifiers.begin(), identifiers.end(), "s" + std::to_string(i + 1));
             auto exPos = std::find(identifiers.begin(), identifiers.end(), "e" + std::to_string(i + 1));
 
             chords.push_back({*sxPos, radianMeasures[sxPos - identifiers.begin()], *exPos, radianMeasures[exPos - identifiers.begin()]});
         }
     }
+
+This function is responsible for parsing the identifiers and radian measures from both arrays, and storing them in the above `Chord` object I created. This function accomplishes this by:
+
+- Using a for loop that goes from 0 to N / 2, which starts us of with a run time of `O(N / 2)`
+- I use the `std::find()` function to search the `identifiers` array twice, once to retrieve the `sx` value, and second to retrieve the `ex` value. Each search take `O(N)` time since it is iterating through each element in the array. That leaves us with a run time of `O(2N)` to parse each array and fill the `chords` vector.
+
+Since the array is making `N / 2` iterations, and each iteration takes `2N` time, Big-O run time for this function will be `O(N / 2 * 2N)`, which can be simplified down to `O(N^2)`.
+
+Let's check the second function in my solution:
+
+    bool findIntersection(Chord c1, Chord c2) {
+        double s1 = c1.radian1, e1 = c1.radian2, s2 = c2.radian1, e2 = c2.radian2;
+
+        return  ((s2 > s1 && e2 > e1) && e1 > s2) || ((s1 > s2 && e1 > e2) && e2 > s1);
+    }
+
+This one is fairly self-explanatory, as there is no iterating over containers. A simple comparison is done between two `Chord` objects, and boolean value is returned signifying whether or not they intersect. Since comparisons will only ever be done between two objects, the function will perform the same number of operations regardless of the size of the initial input. Thus, the run time of this function is constant, or `O(1)`.
+
+## Potential Improvements/Optimizations
+Although I was satisified with the solution I came up with, I acknowledge that there are a few ways to optimize my code to run a little more efficiently.
