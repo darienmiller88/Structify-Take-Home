@@ -8,7 +8,8 @@ Given a list of chords in a circle, count all intersections within the circle. A
 
 ## Example Input 
 You are given two lists, `l1 = ["s1", "e2", "e1", "s2"]`, `l2=[0.78, 3.92, 1.77, 1.47]`. Take a look at the picture below to see the chords formed by each radian measure. In this case, there is one intersection between these two chords.
-<img width="137" alt="example input" src="https://github.com/darienmiller88/Structify-Take-Home/assets/32966645/53554c88-60c7-440d-8813-10b64c37cb2b">
+
+<img width="237" alt="example input" src="https://github.com/darienmiller88/Structify-Take-Home/assets/32966645/53554c88-60c7-440d-8813-10b64c37cb2b">
 
 ## Constraints
 - All radian values fall in the range of `[0, 2pi]`.
@@ -27,6 +28,14 @@ the first radian measure, or `sx` of the chord, and the second value representin
 `x` in this case represents which number chord these measures belong to, the 1st one, 2nd one, 3rd, etc. `sx` and `ex` values must start at `1`, and continue by `1` for as many chords you are inputting in to program.
 
 ## Thought process, and strategy
-When trying to figure out 
+When trying to figure out how I can come up with a way to use the input given to find a solution, my mind was wracked with many different possibilities. I had initially overcomplicated it, and tried leveraging several mathematical concepts such as the `Intersecting Chords Theorem` and a few others. When I realized I did not have nearly enough information to use these theorems, I scaled back, and decided to try and find a relationship with the radian measures. I asked several important questions:
+
+- What exactly causes these chords to intersect?
+- Can I compare the s1 and e1 measures to the s2 and e2 measures, and draw some sort of conclusion from it?
+- What's the difference between the relationship of s1, e1, and s2 and e2 when the chords intersect, as opposed to when the **don't** intersect?
+
+After asking all of these important questions, eventually, I struck gold and found the relationship I was looking for!
+
+**When two chords intersect, the sx and ex values of one, will ALWAYS be greater than the sx and ex values of the other**
 
 ## Big-O Analysis
