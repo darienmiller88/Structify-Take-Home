@@ -107,10 +107,9 @@ Finally, Let's check the third and last function in my solution:
         return intersections.size();
     }
 
-In this function, just like the first one utilizes a nested loop, but with a couple of changes. It starts from `i to N`, and the inner loop starts at i + 1 to N. This slight change reduces the runtime somewhat compared to a standard `O(N^2)` nested loop. Since each iteration of the inner loop will check on less number than the previous iteration, the total number of iterations will be equal to the famous arithmetic sequence, `O(N(N + N)/2)`, which represents the sum of numbers 1 to N. 
+In this function, just like the first one utilizes a nested loop, but with a couple of changes. It starts from `i to N`, and the inner loop starts at `i + 1 to N`. This slight change reduces the runtime somewhat compared to a standard `O(N^2)` nested loop. Since each iteration of the inner loop will check on less numbers than the previous iteration, the total number of iterations will be equal to the famous arithmetic sequence, `O(N(N + 1)/2)`, which represents the sum of numbers 1 to N. 
 
-> When simplified, the runtime for this function is also `O(N^2)`.
- Added together, The total runtime for my solution is O(N^2) + O(1) + O(N^2).
+> When simplified, the runtime for this function is also `O(N^2)`. Added together, The total runtime for my solution is `O(N^2) + O(1) + O(N^2)`.
 
 ## Potential Improvements/Optimizations
-Although I was satisified with the solution I came up with, I acknowledge that there are a few ways to optimize my code to run a little more efficiently.
+Although I was satisified with the solution I came up with, I acknowledge that there are a few ways to optimize my code to run a little more efficiently. The function I could have optimized the most was definitely my `parseRadianMeasures()` function. In this case, I decided to priotize code readability and terseness over trying to write the most optimal algortithm I could possibly write. The strategy I could have used involved created a new object called`radianMeasure`, and then storing both the value from identifier array and radianMeasures array in this data structure. 

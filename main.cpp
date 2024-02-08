@@ -4,13 +4,18 @@
 #include <algorithm>
 #include <unordered_map>
 
-struct Chord{
-    std::string s_x;
-    double      radian1;
-
-    std::string e_x;
-    double      radian2;
+struct RadianMeasure{
+    std::string identifier;
+    double      radianMeasure;
 };
+
+struct Chord{
+    Chord(RadianMeasure sx, RadianMeasure ex) : radianMeasure1(sx), radianMeasure2(ex){}
+
+    RadianMeasure radianMeasure1;
+    RadianMeasure radianMeasure2;
+};
+
 
 bool findIntersection(Chord c1, Chord c2) {
     /*
@@ -20,7 +25,8 @@ bool findIntersection(Chord c1, Chord c2) {
     */
 
    //This is done for readability! It definitely helped.
-   double s1 = c1.radian1, e1 = c1.radian2, s2 = c2.radian1, e2 = c2.radian2;
+    double s1 = c1.radianMeasure1.radianMeasure, e1 = c1.radianMeasure2.radianMeasure, 
+        s2 = c2.radianMeasure1.radianMeasure, e2 = c2.radianMeasure2.radianMeasure;
 
     return 
         //First, check to see if the second chord is larger than the first chord. This is done by simply
@@ -62,14 +68,43 @@ int returnAllIntersections(const std::vector<Chord> &chords){
     return intersections.size();
 }
 
-void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
-    for (size_t i = 0; i < identifiers.size() / 2; i++){
-        //find si and ei.
-        auto sxPos = std::find(identifiers.begin(), identifiers.end(), "s" + std::to_string(i + 1));
-        auto exPos = std::find(identifiers.begin(), identifiers.end(), "e" + std::to_string(i + 1));
+// void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
+//     for (size_t i = 0; i < identifiers.size() / 2; i++){
+//         //find si and ei.
+//         auto sxPos = std::find(identifiers.begin(), identifiers.end(), "s" + std::to_string(i + 1));
+//         auto exPos = std::find(identifiers.begin(), identifiers.end(), "e" + std::to_string(i + 1));
 
-        chords.push_back({*sxPos, radianMeasures[sxPos - identifiers.begin()], *exPos, radianMeasures[exPos - identifiers.begin()]});
+//         chords.push_back({*sxPos, radianMeasures[sxPos - identifiers.begin()], *exPos, radianMeasures[exPos - identifiers.begin()]});
+//     }
+// }
+
+void parseRadianMeasures(const std::vector<std::string> &identifiers, const std::vector<double> &radianMeasures, std::vector<Chord> &chords){
+    std::vector<RadianMeasure> allRadianMeasures;
+
+    //Create a radian measure object, and store it in the vector. This process scales linearly with N, so its
+    //run time would be O(N).
+    for (size_t i = 0; i < identifiers.size(); i++){
+        allRadianMeasures.push_back({identifiers[i], radianMeasures[i]});
     }
+    
+    //Afterwards, sort the radian measures using the identifier as the predicate. std::sort uses the quick sort
+    //algorithm underneath, so the runtime here would be O(Nlog(N)).
+    std::sort(allRadianMeasures.begin(), allRadianMeasures.end(), [](RadianMeasure s1, RadianMeasure s2) -> bool{
+        return s1.identifier < s2.identifier;
+    });
+    
+    //Finally after the radian measures have been sorted, extract them from the radianMeasures container, and store
+    //it inside the chords container. The runtime here is O(N / 2), since we only need to go through half of the
+    //radian measures as a result of them being sorted.
+    int len = allRadianMeasures.size() / 2;
+    for (size_t i = 0; i < len; i++){
+        RadianMeasure sx = allRadianMeasures[i + len];
+        RadianMeasure ex = allRadianMeasures[i];
+
+        chords.push_back(Chord(sx, ex));
+    }
+
+    //Total Run Time: O(N) + O(Nlog(N)) + O(N) = O(Nlog(N) + 2N)
 }
 
 int main(){  
